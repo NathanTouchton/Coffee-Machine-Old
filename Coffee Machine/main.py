@@ -32,14 +32,16 @@ resources = {
 
 
 # Program Requirements:
-# 1: Print report
-# 2: Check if resources are sufficient
-# 3: Process coins.
-# 4: Check if transaction was successful
+    # 1: Print report
+    # 2: Check if resources are sufficient
+    # 3: Process coins.
+    # 4: Check if transaction was successful
 
 # TODO 1: Prompt user by asking “​What would you like? (espresso/latte/cappuccino):​” 
     # a. Check the user’s input to decide what to do next. 
     # b. The prompt should show every time action has completed, e.g. once the drink is dispensed. The prompt should show again to serve the next customer. 
+
+USER_DRINK_CHOICE = input("What would you like? (espresso/latte/cappuccino): ").lower()
 
 # TODO 2: Print report. 
     # a. When the user enters “report” to the prompt, a report should be generated that shows 
@@ -49,12 +51,20 @@ resources = {
     # Coffee: 76g 
     # Money: $2.5
 
-# TODO 3: Check resources sufficient? 
-    # a. When the user chooses a drink, the program should check if there are enough 
-    # resources to make that drink.  
-    # b. E.g. if Latte requires 200ml water but there is only 100ml left in the machine. It should 
-    # not continue to make the drink but print: “​Sorry there is not enough water.​” 
+def report():
+    for item in resources:
+        print(item + ": " + str(resources[item]))
+if USER_DRINK_CHOICE == "report":
+    report()
+
+# TODO 3: Check resources sufficient?
+    # a. When the user chooses a drink, the program should check if there are enough
+    # resources to make that drink.
+    # b. E.g. if Latte requires 200ml water but there is only 100ml left in the machine. It should
+    # not continue to make the drink but print: “​Sorry there is not enough water.​”
     # c. The same should happen if another resource is depleted, e.g. milk or coffee.
+
+
 
 # TODO 4: Process coins. 
     # a. If there are sufficient resources to make the drink selected, then the program should 
@@ -93,7 +103,8 @@ resources = {
     # Milk: 50ml 
     # Coffee: 76g 
     # Money: $2.5 
-    
+       
     # b. Once all resources have been deducted, tell the user “Here is your latte. Enjoy!”. If 
     # latte was their choice of drink.
+
 
