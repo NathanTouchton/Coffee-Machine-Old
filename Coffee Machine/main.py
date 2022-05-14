@@ -31,65 +31,76 @@ RESOURCES = {
 }
 
 # Program Requirements:
-    # 1: Print report
-    # 2: Check if RESOURCES are sufficient
-    # 3: Process coins.
-    # 4: Check if transaction was successful
+# 1: Print report
+# 2: Check if RESOURCES are sufficient
+# 3: Process coins.
+# 4: Check if transaction was successful
 
 # TODO 1: Prompt user by asking “What would you like? (espresso/latte/cappuccino):”
     # a. Check the user’s input to decide what to do next.
     # b. The prompt should show every time action has completed, e.g. once the drink is dispensed. The prompt should show again to serve the next customer.
 
-USER_DRINK_CHOICE = input("What would you like? (espresso/latte/cappuccino): ").lower()
-QUARTERS = int(input("How many quarters? "))
-DIMES = int(input("How many dimes? "))
-NICKELS = int(input("How many nickels? "))
-PENNIES = int(input("How many pennies? "))
+CONTINUE = 1
 
-QUARTERS_MATH = QUARTERS * .25
-DIMES_MATH = DIMES * .1
-NICKELS_MATH = NICKELS * .05
-PENNIES_MATH = PENNIES * .01
+while CONTINUE == 1:
+    USER_DRINK_CHOICE = input("What would you like? (espresso/latte/cappuccino): ").lower()
 
-TOTAL_CALCULATION = QUARTERS_MATH + DIMES_MATH + NICKELS_MATH + PENNIES_MATH
+    def report():
+        for item in RESOURCES:
+            print(item + ": " + str(RESOURCES[item]))
+    if USER_DRINK_CHOICE == "report":
+        report()
+        break
 
-# TODO 2: Print report.
-    # a. When the user enters “report” to the prompt, a report should be generated that shows 
-    # the current resource values. e.g.  
-    # Water: 100ml 
-    # Milk: 50ml
-    # Coffee: 76g
-    # Money: $2.5
+    QUARTERS = int(input("How many quarters? "))
+    DIMES = int(input("How many dimes? "))
+    NICKELS = int(input("How many nickels? "))
+    PENNIES = int(input("How many pennies? "))
 
-def report():
-    for item in RESOURCES:
-        print(item + ": " + str(RESOURCES[item]))
-if USER_DRINK_CHOICE == "report":
-    report()
+    QUARTERS_MATH = QUARTERS * .25
+    DIMES_MATH = DIMES * .1
+    NICKELS_MATH = NICKELS * .05
+    PENNIES_MATH = PENNIES * .01
 
-# TODO 3: Check RESOURCES sufficient?
-    # a. When the user chooses a drink, the program should check if there are enough
-    # RESOURCES to make that drink.
-    # b. E.g. if Latte requires 200ml water but there is only 100ml left in the machine. It should
-    # not continue to make the drink but print: “Sorry there is not enough water.”
-    # c. The same should happen if another resource is depleted, e.g. milk or coffee.
+    TOTAL_CALCULATION = QUARTERS_MATH + DIMES_MATH + NICKELS_MATH + PENNIES_MATH
 
-def dispense(drink):
-    for item in RESOURCES:
-        if RESOURCES[item] < MENU[drink]["ingredients"][item]:
-            print(f"Sorry, there's not enough {item}. You've been refunded. Please try again later.")
-            return
-    drink_cost = MENU[drink]["cost"]
-    if TOTAL_CALCULATION < drink_cost:
-        print(f"Sorry, you gave ${TOTAL_CALCULATION}, but the total is ${drink_cost}. Your money has been returned. Please try again when you have enough.")
-    elif TOTAL_CALCULATION > drink_cost:
-        change = TOTAL_CALCULATION - drink_cost
-        print(f"Here is ${round(change, 2)} in change. Enjoy your coffee!")
-    elif TOTAL_CALCULATION == drink_cost:
-        print("Enjoy your cofee!")
-    
+    # TODO 2: Print report.
+        # a. When the user enters “report” to the prompt, a report should be generated that shows 
+        # the current resource values. e.g.  
+        # Water: 100ml 
+        # Milk: 50ml
+        # Coffee: 76g
+        # Money: $2.5
 
-dispense(USER_DRINK_CHOICE)
+    # TODO 3: Check RESOURCES sufficient?
+        # a. When the user chooses a drink, the program should check if there are enough
+        # RESOURCES to make that drink.
+        # b. E.g. if Latte requires 200ml water but there is only 100ml left in the machine. It should
+        # not continue to make the drink but print: “Sorry there is not enough water.”
+        # c. The same should happen if another resource is depleted, e.g. milk or coffee.
+
+    def resource_deduction(drink):
+        for i in RESOURCES:
+            RESOURCES[i] -= MENU[drink]["ingredients"][i]
+
+    def dispense(drink):
+        global CONTINUE
+        for item in RESOURCES:
+            if RESOURCES[item] < MENU[drink]["ingredients"][item]:
+                print(f"Sorry, there's not enough {item}. You've been refunded. Please try again later.")
+                CONTINUE -= 1
+                break
+        drink_cost = MENU[drink]["cost"]
+        if TOTAL_CALCULATION < drink_cost:
+            print(f"Sorry, you gave ${TOTAL_CALCULATION}, but the total is ${drink_cost}. Your money has been returned. Please try again when you have enough.")
+        elif TOTAL_CALCULATION > drink_cost:
+            change = TOTAL_CALCULATION - drink_cost
+            print(f"Here is ${round(change, 2)} in change. Enjoy your coffee!")
+        elif TOTAL_CALCULATION == drink_cost:
+            print("Enjoy your cofee!")
+        resource_deduction(drink)
+
+    dispense(USER_DRINK_CHOICE)
 
 # TODO 4: Process coins. ----- Done in lines 49-54.
     # a. If there are sufficient RESOURCES to make the drink selected, then the program should
@@ -131,11 +142,3 @@ dispense(USER_DRINK_CHOICE)
 
     # b. Once all RESOURCES have been deducted, tell the user “Here is your latte. Enjoy!”. If
     # latte was their choice of drink.
-
-def ingredients_check(drink):
-    for i in MENU[drink]["ingredients"]:
-        ingredient_requirement = MENU[drink]["ingredients"][i]
-        ingredient_amount = RESOURCES[i]
-        if ingredient_requirement > ingredient_amount:
-            print(f"Sorry, there's not enough {i}. Please try again later.")
-            return
